@@ -14,9 +14,9 @@ def buff_overflow(payload: bytes, fail_str: str | None = None, elf: str = "./a.o
     with open("payload_file", "wb") as file:  # input redirection is the easiest way to get raw bytes in input
         file.write(payload)
 
-    print("running executable")
+    print(f"Running executable: {elf}\n\n" + "--------------------------- STDOUT ---------------------------")
     out = subprocess.run(f"{elf} < payload_file", shell=True, capture_output=True, text=True)
-    print(out.stdout)  # show what the program printed out
+    print(f"{out.stdout}\n------------------------- END STDOUT -------------------------\n")
 
     is_pwn: bool
     if (fail_str is not None) and (fail_str not in out.stdout):
